@@ -23,3 +23,24 @@ I will try to follow the Ansible best practices for directory layout, which will
             └── nginx-site.conf.j2
 ```
 
+## Todos
+- [ ] Migrate tasks from deploy-webserver.yml to webserver role tasks folder
+    - [ ] tasks/main.yml e.g. for installing nginx and configuring folders and
+      config files
+    - [ ] handlers/main.yml e.g. for restarting nginx
+- [ ] Add letsencrypt role for SSL certificates
+- [ ] Add blog role for deploying my blog
+
+## More environments be like
+```
+inventory/                                                 
+├── production/                                            
+│   ├── hosts                 # inventory-Datei für Prod   
+│   └── group_vars/                                        
+│       └── webserver.yml     # Prod-Variablen             
+│                                                          
+└── staging/                                               
+    ├── hosts                 # inventory-Datei für Staging
+        └── group_vars/                                        
+                └── webserver.yml     # Staging-Variablen          
+```
