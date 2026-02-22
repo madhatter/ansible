@@ -1,0 +1,39 @@
+---
+# Variables for webserver group
+
+# Nginx configuration
+nginx_sites:
+  - name: nostalgix
+    server_name: nostalgix.org
+    listen: 443
+    root: /var/www/blog
+    ssl: true
+    access_log: /var/log/nginx/nostalgix.access.log
+    # Redirects for this site
+    redirects:
+      - from_server_name: www.nostalgix.org
+        to_url: http://nostalgix.org$request_uri
+      - from_server_name: nostalgix.org
+        to_url: https://nostalgix.org$request_uri
+
+  - name: share.nostalgix.org
+    server_name: share.nostalgix.org
+    listen: 80
+    root: /var/www/share
+    autoindex: true
+    access_log: /var/log/nginx/share.access.log
+
+# SSL/TLS configuration (optional)
+nginx_ssl:
+  enabled: true # Enable SSL globally since a site uses it
+  cert_path: /etc/letsencrypt/live/www.nostalgix.org/fullchain.pem
+  key_path: /etc/letsencrypt/live/www.nostalgix.org/privkey.pem
+
+# Application settings
+app_user: deployer
+app_root: /home/{{ app_user }}/blog
+app_port: 3000
+
+# Site configuration
+site_domain: "{{ ansible_facts['fqdn'] }}"
+site_root: /var/www/html

@@ -1,0 +1,31 @@
+{% if item.name == 'share.nostalgix.org' %}
+
+
+{% endif %}{% if 'redirects' in item %}{% for redirect in item.redirects %}server {
+  listen       {{ redirect.listen | default(80) }};
+  server_name  {{ redirect.from_server_name }};
+  return       301 {{ redirect.to_url }};
+}
+
+{% endfor %}{% endif %}server {
+  listen {{ item.listen | default(80) }}{% if item.ssl | default(false) %} ssl{% endif %};
+{% if item.ssl | default(false) %}
+
+  ssl_certificate {{ nginx_ssl.cert_path }};
+  ssl_certificate_key {{ nginx_ssl.key_path }};
+{% endif %}{% if item.access_log is defined %}
+
+  access_log  {{ item.access_log }};
+{% endif %}
+
+  server_name {{ item.server_name }};
+  root   {{ item.root }};
+
+  location /{
+{% if item.autoindex | default(false) %}
+    autoindex on;
+{% else %}
+    index  {{ item.index | default('index.html index.htm') }};
+{% endif %}
+  }
+}

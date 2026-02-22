@@ -1,0 +1,97 @@
+# deploy-webserver.yml
+- name: Setup Nginx webserver
+  hosts: webserver
+  become: yes
+  vars:
+    nginx_config_path: /etc/nginx/sites-available
+    nginx_enable_path: /etc/nginx/sites-enabled
+
+  tasks:
+    - name: Install required packages
+      pacman:
+        name:
+          - nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure nginx directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      loop:
+        - "{{ nginx_config_path }}"
+        - "{{ nginx_enable_path }}"
+
+    - name: Ensure www directory exist
+      file:
+        path: "/var/www"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Create site directories
+      file:
+        path: "/var/www/{{ item }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0775'
+      loop:
+        - blog
+        - share
+        - test
+
+    - name: Deploy nginx site configuration
+      template:
+        src: ../roles/webserver/templates/nginx-site.conf.j2
+        dest: "{{ nginx_config_path }}/{{ item.name }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop: "{{ nginx_sites }}"
+      notify: Reload nginx
+
+    - name: Enable site configuration
+      file:
+        src: "{{ nginx_config_path }}/{{ item.name }}"
+        dest: "{{ nginx_enable_path }}/{{ item.name }}"
+        state: link
+      loop: "{{ nginx_sites }}"
+      notify: Reload nginx
+
+    - name: Remove default nginx config
+      file:
+        path: "{{ nginx_enable_path }}/default"
+        state: absent
+      notify: Reload nginx
+
+    - name: Ensure nginx is started and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Validate nginx configuration
+      command: nginx -t
+      register: nginx_test
+      changed_when: false
+
+    - name: Display nginx validation output
+      debug:
+        msg: "{{ nginx_test.stdout.split('\n') }}"
+        verbosity: 1
+
+  handlers:
+    - name: Reload nginx
+      service:
+        name: nginx
+        state: reloaded
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
