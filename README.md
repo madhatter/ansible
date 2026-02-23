@@ -28,8 +28,11 @@ I will try to follow the Ansible best practices for directory layout, which will
     - [ ] tasks/main.yml e.g. for installing nginx and configuring folders and
       config files
     - [ ] handlers/main.yml e.g. for restarting nginx
+- [ ] Configure nginx service itself
 - [ ] Add letsencrypt role for SSL certificates
 - [ ] Add blog role for deploying my blog
+    - [ ] deployer user
+    - [ ] git hook for automatic deployment
 
 ## More environments be like
 ```
