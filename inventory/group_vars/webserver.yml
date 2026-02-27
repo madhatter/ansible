@@ -12,7 +12,7 @@ nginx_sites:
     # Redirects for this site
     redirects:
       - from_server_name: www.nostalgix.org
-        to_url: http://nostalgix.org$request_uri
+        to_url: https://nostalgix.org$request_uri
       - from_server_name: nostalgix.org
         to_url: https://nostalgix.org$request_uri
 

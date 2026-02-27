@@ -82,7 +82,7 @@
 
     - name: Display nginx validation output
       debug:
-        msg: "{{ nginx_test.stdout.split('\n') }}"
+        msg: "{{ nginx_test.stderr.split('\n') }}"
         verbosity: 1
 
   handlers:
