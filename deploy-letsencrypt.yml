@@ -1,0 +1,7 @@
+# deploy-letsencrypt.yml
+# Run after deploy-webserver.yml so nginx is serving port 80.
+- name: Manage SSL certificates
+  hosts: webserver
+  become: true
+  roles:
+    - letsencrypt

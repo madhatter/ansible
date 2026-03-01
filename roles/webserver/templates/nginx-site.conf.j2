@@ -4,7 +4,14 @@
 {% endif %}{% if 'redirects' in item %}{% for redirect in item.redirects %}server {
   listen       {{ redirect.listen | default(80) }};
   server_name  {{ redirect.from_server_name }};
-  return       301 {{ redirect.to_url }};
+
+  location /.well-known/acme-challenge/ {
+    root {{ letsencrypt_webroot | default('/var/www/letsencrypt') }};
+  }
+
+  location / {
+    return 301 {{ redirect.to_url }};
+  }
 }
 
 {% endfor %}{% endif %}server {
@@ -20,6 +27,12 @@
 
   server_name {{ item.server_name }};
   root   {{ item.root }};
+{% if not (item.ssl | default(false)) %}
+
+  location /.well-known/acme-challenge/ {
+    root {{ letsencrypt_webroot | default('/var/www/letsencrypt') }};
+  }
+{% endif %}
 
   location /{
 {% if item.autoindex | default(false) %}

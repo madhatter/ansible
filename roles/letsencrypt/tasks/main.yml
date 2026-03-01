@@ -1,0 +1,42 @@
+---
+- name: Install certbot
+  pacman:
+    name:
+      - certbot
+      - certbot-nginx
+    state: present
+    update_cache: true
+
+- name: Create webroot directory
+  file:
+    path: "{{ letsencrypt_webroot }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Check existing certificates
+  stat:
+    path: /etc/letsencrypt/live/{{ item.name }}/fullchain.pem
+  register: cert_stat
+  loop: "{{ certbot_certs }}"
+
+- name: Issue missing certificates
+  command: >
+    certbot certonly --webroot
+    -w {{ letsencrypt_webroot }}
+    {{ item.item.domains | map('regex_replace', '^(.*)$', '-d \1') | join(' ') }}
+    --cert-name {{ item.item.name }}
+    --email {{ certbot_email }}
+    --agree-tos
+    --non-interactive
+  when: not item.stat.exists
+  loop: "{{ cert_stat.results }}"
+  changed_when: true
+  notify: Reload nginx
+
+- name: Enable certbot renewal timer
+  systemd:
+    name: certbot-renew.timer
+    enabled: true
+    state: started
