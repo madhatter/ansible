@@ -33,7 +33,3 @@ nginx_ssl:
 app_user: deployer
 app_root: /home/{{ app_user }}/blog
 app_port: 3000
-
-# Site configuration
-site_domain: "{{ ansible_facts['fqdn'] }}"
-site_root: /var/www/html
