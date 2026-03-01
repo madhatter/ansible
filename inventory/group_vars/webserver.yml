@@ -29,6 +29,24 @@ nginx_ssl:
   cert_path: /etc/letsencrypt/live/www.nostalgix.org/fullchain.pem
   key_path: /etc/letsencrypt/live/www.nostalgix.org/privkey.pem
 
+# Let's Encrypt
+letsencrypt_webroot: /var/www/letsencrypt
+certbot_email: ""  # fill in your email address
+certbot_certs:
+  - name: www.nostalgix.org
+    domains:
+      - nostalgix.org
+      - www.nostalgix.org
+  - name: share.nostalgix.org
+    domains:
+      - share.nostalgix.org
+  - name: brutal.nostalgix.org
+    domains:
+      - brutal.nostalgix.org
+  - name: mail.nostalgix.org
+    domains:
+      - mail.nostalgix.org
+
 # Application settings
 app_user: deployer
 app_root: /home/{{ app_user }}/blog

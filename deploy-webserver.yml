@@ -1,6 +1,6 @@
 # deploy-webserver.yml
 - name: Setup Nginx webserver
   hosts: webserver
-  become: yes
+  become: true
   roles:
     - webserver

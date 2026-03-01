@@ -1,0 +1,4 @@
+---
+letsencrypt_webroot: /var/www/letsencrypt
+certbot_email: ""
+certbot_certs: []
