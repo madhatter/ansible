@@ -1,0 +1,6 @@
+---
+- name: Deploy mailserver
+  hosts: mailserver
+  become: true
+  roles:
+    - mailserver

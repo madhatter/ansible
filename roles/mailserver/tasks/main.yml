@@ -1,0 +1,143 @@
+---
+- name: Install mail packages
+  pacman:
+    name:
+      - postfix
+      - dovecot
+      - opendkim
+    state: present
+    update_cache: true
+
+- name: Create opendkim key directory
+  file:
+    path: "{{ mail_dkim_key_dir }}/{{ mail_domain }}"
+    state: directory
+    owner: opendkim
+    group: opendkim
+    mode: '0700'
+
+- name: Check if DKIM key exists
+  stat:
+    path: "{{ mail_dkim_key_dir }}/{{ mail_domain }}/{{ mail_dkim_selector }}.private"
+  register: dkim_key
+
+- name: Generate DKIM key pair
+  command: >
+    opendkim-genkey
+    -b 2048
+    -d {{ mail_domain }}
+    -D {{ mail_dkim_key_dir }}/{{ mail_domain }}
+    -s {{ mail_dkim_selector }}
+  when: not dkim_key.stat.exists
+  register: dkim_key_generated
+  notify: Restart opendkim
+
+- name: Set DKIM key ownership
+  file:
+    path: "{{ mail_dkim_key_dir }}/{{ mail_domain }}/{{ mail_dkim_selector }}.private"
+    owner: opendkim
+    group: opendkim
+    mode: '0600'
+  when: dkim_key_generated is changed
+
+- name: Deploy opendkim config
+  template:
+    src: opendkim.conf.j2
+    dest: /etc/opendkim/opendkim.conf
+    owner: root
+    group: opendkim
+    mode: '0640'
+  notify: Restart opendkim
+
+- name: Deploy opendkim KeyTable
+  template:
+    src: opendkim-keytable.j2
+    dest: /etc/opendkim/KeyTable
+    owner: opendkim
+    group: opendkim
+    mode: '0640'
+  notify: Restart opendkim
+
+- name: Deploy opendkim SigningTable
+  template:
+    src: opendkim-signingtable.j2
+    dest: /etc/opendkim/SigningTable
+    owner: opendkim
+    group: opendkim
+    mode: '0640'
+  notify: Restart opendkim
+
+- name: Deploy postfix main.cf
+  template:
+    src: main.cf.j2
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload postfix
+
+- name: Deploy postfix master.cf
+  copy:
+    src: master.cf
+    dest: /etc/postfix/master.cf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart postfix
+
+- name: Ensure aliases file exists
+  file:
+    path: /etc/postfix/aliases
+    state: touch
+    owner: root
+    group: root
+    mode: '0644'
+  changed_when: false
+
+- name: Deploy dovecot config
+  template:
+    src: dovecot.conf.j2
+    dest: /etc/dovecot/dovecot.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart dovecot
+
+- name: Ensure services are started and enabled
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - opendkim
+    - postfix
+    - dovecot
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Read DKIM public key
+  slurp:
+    src: "{{ mail_dkim_key_dir }}/{{ mail_domain }}/{{ mail_dkim_selector }}.txt"
+  register: dkim_pubkey
+  when: not ansible_check_mode
+
+- name: Print DNS records
+  when: not ansible_check_mode
+  debug:
+    msg: |
+      ============================================================
+      DNS records to set at netcup:
+      ============================================================
+
+      MX (on nostalgix.org):
+        10  mail.nostalgix.org.
+
+      SPF (TXT on nostalgix.org):
+        v=spf1 mx ~all
+
+      DKIM (TXT on {{ mail_dkim_selector }}._domainkey.{{ mail_domain }}):
+        {{ dkim_pubkey.content | b64decode | trim }}
+
+      DMARC (TXT on _dmarc.{{ mail_domain }}):
+        v=DMARC1; p=none; rua=mailto:postmaster@{{ mail_domain }}
+
+      ============================================================

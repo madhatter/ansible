@@ -1,0 +1,31 @@
+dovecot_config_version = 2.4.0
+dovecot_storage_version = 2.4.0
+
+protocols {
+  pop3 = yes
+}
+
+# mbox format, INBOX at /var/spool/mail/<user>
+mail_driver = mbox
+mail_path = /var/spool/mail/%{user}
+mail_privileged_group = mail
+
+passdb pam {
+}
+
+userdb passwd {
+}
+
+# Auth socket for postfix SASL
+service auth {
+  unix_listener /var/spool/postfix/private/auth {
+    mode = 0660
+    user = postfix
+    group = postfix
+  }
+}
+
+ssl_server {
+  cert_file = {{ mail_cert_path }}
+  key_file = {{ mail_key_path }}
+}

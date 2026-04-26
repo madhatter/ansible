@@ -1,0 +1,8 @@
+---
+mail_hostname: mail.nostalgix.org
+mail_domain: nostalgix.org
+mail_user: madhatter
+mail_dkim_selector: mail
+mail_dkim_key_dir: /etc/opendkim/keys
+mail_cert_path: /etc/letsencrypt/live/mail.nostalgix.org/fullchain.pem
+mail_key_path: /etc/letsencrypt/live/mail.nostalgix.org/privkey.pem
