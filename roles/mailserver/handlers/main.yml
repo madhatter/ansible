@@ -1,4 +1,7 @@
 ---
+- name: Rebuild aliases
+  command: newaliases
+
 - name: Reload postfix
   service:
     name: postfix

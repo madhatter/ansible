@@ -85,14 +85,16 @@
     mode: '0644'
   notify: Restart postfix
 
-- name: Ensure aliases file exists
-  file:
-    path: /etc/postfix/aliases
-    state: touch
+- name: Deploy postfix aliases
+  copy:
+    src: aliases
+    dest: /etc/postfix/aliases
     owner: root
     group: root
     mode: '0644'
-  changed_when: false
+  notify: Rebuild aliases
+
+
 
 - name: Deploy dovecot config
   template:
