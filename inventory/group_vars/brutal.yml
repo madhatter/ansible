@@ -1,7 +1,5 @@
 ---
-# Variables for webserver group
-
-# Nginx configuration
+# Nginx
 nginx_sites:
   - name: nostalgix
     server_name: nostalgix.org
@@ -9,7 +7,6 @@ nginx_sites:
     root: /var/www/blog
     ssl: true
     access_log: /var/log/nginx/nostalgix.access.log
-    # Redirects for this site
     redirects:
       - from_server_name: www.nostalgix.org
         to_url: https://nostalgix.org$request_uri
@@ -23,15 +20,14 @@ nginx_sites:
     autoindex: true
     access_log: /var/log/nginx/share.access.log
 
-# SSL/TLS configuration (optional)
 nginx_ssl:
-  enabled: true # Enable SSL globally since a site uses it
+  enabled: true
   cert_path: /etc/letsencrypt/live/www.nostalgix.org/fullchain.pem
   key_path: /etc/letsencrypt/live/www.nostalgix.org/privkey.pem
 
 # Let's Encrypt
 letsencrypt_webroot: /var/www/letsencrypt
-certbot_email: ""  # fill in your email address
+certbot_email: ""
 certbot_certs:
   - name: www.nostalgix.org
     domains:
@@ -51,3 +47,9 @@ certbot_certs:
 app_user: deployer
 app_root: /home/{{ app_user }}/blog
 app_port: 3000
+
+# Mail
+mail_hostname: mail.nostalgix.org
+mail_domain: nostalgix.org
+mail_user: madhatter
+mail_dkim_selector: mail

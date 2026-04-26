@@ -1,5 +1,0 @@
----
-mail_hostname: mail.nostalgix.org
-mail_domain: nostalgix.org
-mail_user: madhatter
-mail_dkim_selector: mail
