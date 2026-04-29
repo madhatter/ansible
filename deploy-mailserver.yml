@@ -1,6 +1,6 @@
 ---
 - name: Deploy mailserver
-  hosts: mailserver
+  hosts: brutal
   become: true
   roles:
     - mailserver
