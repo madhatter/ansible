@@ -40,6 +40,13 @@
     mode: '0600'
   when: dkim_key_generated is changed
 
+- name: Add postfix to opendkim group
+  user:
+    name: postfix
+    groups: opendkim
+    append: true
+  notify: Restart postfix
+
 - name: Deploy opendkim config
   template:
     src: opendkim.conf.j2

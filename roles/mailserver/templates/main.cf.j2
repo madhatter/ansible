@@ -82,7 +82,7 @@ broken_sasl_auth_clients = yes
 smtpd_sasl_security_options = noanonymous
 
 # TLS
-smtp_use_tls = yes
+smtp_tls_security_level = may
 smtpd_tls_security_level = may
 smtpd_tls_cert_file = {{ mail_cert_path }}
 smtpd_tls_key_file = {{ mail_key_path }}

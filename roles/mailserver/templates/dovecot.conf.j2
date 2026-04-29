@@ -5,9 +5,10 @@ protocols {
   pop3 = yes
 }
 
-# mbox format, INBOX at /var/spool/mail/<user>
+# mbox format: folders in ~/mail-server/, INBOX at /var/spool/mail/<user>
 mail_driver = mbox
-mail_path = /var/spool/mail/%{user}
+mail_path = ~/mail-server
+mail_inbox_path = /var/spool/mail/%{user}
 mail_privileged_group = mail
 
 passdb pam {
