@@ -87,8 +87,8 @@ smtpd_tls_security_level = may
 smtpd_tls_cert_file = {{ mail_cert_path }}
 smtpd_tls_key_file = {{ mail_key_path }}
 
-# DKIM milter
+# milters: opendkim (signing) + rspamd (spam filtering)
 milter_default_action = accept
 milter_protocol = 6
-smtpd_milters = local:/run/opendkim/opendkim.sock
+smtpd_milters = local:/run/opendkim/opendkim.sock, local:/run/rspamd/rspamd.sock
 non_smtpd_milters = local:/run/opendkim/opendkim.sock

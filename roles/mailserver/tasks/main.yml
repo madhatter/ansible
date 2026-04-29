@@ -5,6 +5,7 @@
       - postfix
       - dovecot
       - opendkim
+      - rspamd
     state: present
     update_cache: true
 
@@ -112,6 +113,24 @@
     mode: '0644'
   notify: Restart dovecot
 
+- name: Deploy rspamd local config
+  template:
+    src: rspamd-local.conf.j2
+    dest: /etc/rspamd/local.d/milter_headers.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart rspamd
+
+- name: Deploy rspamd proxy worker config
+  template:
+    src: rspamd-proxy.conf.j2
+    dest: /etc/rspamd/local.d/worker-proxy.inc
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart rspamd
+
 - name: Ensure services are started and enabled
   service:
     name: "{{ item }}"
@@ -119,6 +138,7 @@
     enabled: true
   loop:
     - opendkim
+    - rspamd
     - postfix
     - dovecot
   ignore_errors: "{{ ansible_check_mode }}"

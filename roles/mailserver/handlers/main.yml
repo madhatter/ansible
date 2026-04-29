@@ -17,6 +17,12 @@
     name: dovecot
     state: restarted
 
+- name: Restart rspamd
+  service:
+    name: rspamd
+    state: restarted
+  ignore_errors: "{{ ansible_check_mode }}"
+
 - name: Restart opendkim
   service:
     name: opendkim
