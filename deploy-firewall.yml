@@ -1,0 +1,6 @@
+---
+- name: Deploy firewall
+  hosts: brutal
+  become: true
+  roles:
+    - firewall
