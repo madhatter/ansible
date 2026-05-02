@@ -122,6 +122,15 @@
     mode: '0644'
   notify: Restart rspamd
 
+- name: Deploy rspamd actions config
+  template:
+    src: rspamd-actions.conf.j2
+    dest: /etc/rspamd/local.d/actions.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart rspamd
+
 - name: Deploy rspamd proxy worker config
   template:
     src: rspamd-proxy.conf.j2
