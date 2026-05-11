@@ -1,0 +1,6 @@
+---
+- name: Deploy network configuration
+  hosts: brutal
+  become: true
+  roles:
+    - network

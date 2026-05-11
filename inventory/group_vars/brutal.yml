@@ -54,6 +54,10 @@ mail_domain: nostalgix.org
 mail_user: madhatter
 mail_dkim_selector: mail
 
+# Network
+network_ipv6_address: 2a03:4000:6:7230::1/64
+network_ipv6_gateway: fe80::1
+
 # Firewall
 firewall_allowed_tcp:
   - 22    # SSH
