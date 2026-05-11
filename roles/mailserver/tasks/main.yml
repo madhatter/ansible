@@ -6,6 +6,7 @@
       - dovecot
       - opendkim
       - rspamd
+      - redis
     state: present
     update_cache: true
 
@@ -140,6 +141,24 @@
     mode: '0644'
   notify: Restart rspamd
 
+- name: Deploy rspamd classifier-bayes config
+  template:
+    src: rspamd-classifier-bayes.conf.j2
+    dest: /etc/rspamd/local.d/classifier-bayes.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart rspamd
+
+- name: Deploy rspamd redis config
+  template:
+    src: rspamd-redis.conf.j2
+    dest: /etc/rspamd/local.d/redis.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart rspamd
+
 - name: Ensure services are started and enabled
   service:
     name: "{{ item }}"
@@ -150,6 +169,7 @@
     - rspamd
     - postfix
     - dovecot
+    - redis
   ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Read DKIM public key

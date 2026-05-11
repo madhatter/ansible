@@ -28,3 +28,9 @@
     name: opendkim
     state: restarted
   ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Restart redis
+  service:
+    name: redis
+    state: restarted
+  ignore_errors: "{{ ansible_check_mode }}"
