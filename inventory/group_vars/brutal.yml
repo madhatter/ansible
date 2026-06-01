@@ -25,9 +25,9 @@ nginx_ssl:
   cert_path: /etc/letsencrypt/live/www.nostalgix.org/fullchain.pem
   key_path: /etc/letsencrypt/live/www.nostalgix.org/privkey.pem
 
-# Let's Encrypt
+# Let's Encrypt configuration
 letsencrypt_webroot: /var/www/letsencrypt
-certbot_email: ""
+certbot_email: "" # fill in your email address
 certbot_certs:
   - name: www.nostalgix.org
     domains:
@@ -66,3 +66,6 @@ firewall_allowed_tcp:
   - 443   # HTTPS
   - 587   # submission
   - 995   # POP3S
+
+# GitHub Actions Deployment
+github_deploy_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDPhHBkx2JMTA4Y2f3TgIXGp3CIuZRCCgSRtx822ivJX+ITJTG4UOD1OqRQlRqv2GNevrq1klAxqoAbXowzzFaaClpLschyekQnmk0cjWmuPjg0XvQh7lqim24fVJEKRKTDeWiO4jAtqyHs3byim9zM/rA1CkSR6pjKInuzC8YPxBzm9aufrc8QY1TMMTZCcTf8SXjUduRcXaFgQ/RMdCrfnBUH+TCohhx0wQhQ2E9Hj+y3QLrltJJqDHFLp5ue0QDZZaiUHXx8TDXIHh3ClMXpew4GjRkPCxCJg7devbefQSjBimUB6KwC6qg0gUVvlT/vJXpJf4/0BOYjNyPKIrwgdGJXfPU/FR/BE5+lAn5EZBub75/4Pi65sV7J6NgJPWhhtKKrZiPd4l8eb7XoFrynOtQp98kjFQxGTnWS9zUaMq/g5hv30UaHJfDDZci3tBzAOqER34G65Z+ZG06M623NPp91jyS3KlQt/f5FktnZxdypGEj5/KV6dZjOb4GRjBvRcjudK84N4iKmm3BLb7yjFN22ettMG3RJbR6SmUAliMlXDWtbrJ0OrHOZuI43GRb1IRw99mYE1jMSUiDaBqeHczMeiktwtd5nLCrCI3E6dRCxHKfZeDLDw7C1FEU+zjucnQfE3H7v0dYweahy+fA3tgfqbADOjYBtyY2Bbihlaw== arvid.warnecke@S0197238"
