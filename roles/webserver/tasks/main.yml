@@ -16,6 +16,7 @@
   loop:
     - "{{ nginx_config_path }}"
     - "{{ nginx_enable_path }}"
+    - "/var/www/letsencrypt"
 
 - name: Ensure www directory exist
   file:

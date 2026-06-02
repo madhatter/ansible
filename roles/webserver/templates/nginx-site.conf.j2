@@ -18,8 +18,8 @@
   listen {{ item.listen | default(80) }}{% if item.ssl | default(false) %} ssl{% endif %};
 {% if item.ssl | default(false) %}
 
-  ssl_certificate {{ nginx_ssl.cert_path }};
-  ssl_certificate_key {{ nginx_ssl.key_path }};
+  ssl_certificate {{ item.ssl_cert }};
+  ssl_certificate_key {{ item.ssl_key }};
 {% endif %}{% if item.access_log is defined %}
 
   access_log  {{ item.access_log }};
@@ -27,8 +27,8 @@
 
   server_name {{ item.server_name }};
   root   {{ item.root }};
-{% if not (item.ssl | default(false)) %}
 
+{% if not (item.ssl | default(false)) %}
   location /.well-known/acme-challenge/ {
     root {{ letsencrypt_webroot | default('/var/www/letsencrypt') }};
   }

@@ -6,6 +6,8 @@ nginx_sites:
     listen: 443
     root: /var/www/blog
     ssl: true
+    ssl_cert: /etc/letsencrypt/live/www.nostalgix.org/fullchain.pem
+    ssl_key: /etc/letsencrypt/live/www.nostalgix.org/privkey.pem
     access_log: /var/log/nginx/nostalgix.access.log
     redirects:
       - from_server_name: www.nostalgix.org
@@ -15,15 +17,22 @@ nginx_sites:
 
   - name: share.nostalgix.org
     server_name: share.nostalgix.org
-    listen: 80
+    listen: 443
     root: /var/www/share
+    ssl: true
+    ssl_cert: /etc/letsencrypt/live/share.nostalgix.org/fullchain.pem
+    ssl_key: /etc/letsencrypt/live/share.nostalgix.org/privkey.pem
     autoindex: true
     access_log: /var/log/nginx/share.access.log
+    redirects:
+      - from_server_name: share.nostalgix.org
+        to_url: https://share.nostalgix.org$request_uri
 
-nginx_ssl:
-  enabled: true
-  cert_path: /etc/letsencrypt/live/www.nostalgix.org/fullchain.pem
-  key_path: /etc/letsencrypt/live/www.nostalgix.org/privkey.pem
+  - name: test.nostalgix.org
+    server_name: test.nostalgix.org
+    listen: 80
+    root: /var/www/test
+    access_log: /var/log/nginx/test.access.log
 
 # Let's Encrypt configuration
 letsencrypt_webroot: /var/www/letsencrypt
